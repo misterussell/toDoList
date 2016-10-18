@@ -93,10 +93,30 @@ function renderCompleteTasks(){
     header.append(newTitle);
 }
 
+toDoList.find('.delete').on('click', function(e) {
+  e.preventDefault();
+  // this listener should delete posts
+  var selectedButton = e.target.className;
+  console.log(selectedButton);
+
+  // var settings = {
+  //     url: 'http://tiny-za-server.herokuapp.com/collections/max-todos',
+  //     type: 'PUT',
+  //     success: function(data, status, xhr) {
+  //     },
+  //     error: function() {
+  //       console.log('could not complete post');
+  //     }
+  //   };
+  //   $.ajax(settings);
+  //
+  // status: 'incomplete'
+});
+
 function renderAllTasks(){
   //display all current and complete tasks
 }
 
 renderForm();
-// renderCurrentTasks();
-renderCompleteTasks();
+renderCurrentTasks();
+// renderCompleteTasks();
