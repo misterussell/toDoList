@@ -3,6 +3,11 @@ var header = $('.page-title');
 var toDoList = $('.toDo-list');
 var container = $('.container');
 
+//filters
+var currentTasks = $('current');
+var completedTasks = $('complete');
+var allTasks = $('allTasks');
+
 function renderForm(){
   var form = $('<form class="new-toDo">'
   +'<input type="text" class="newTask">'
@@ -12,6 +17,7 @@ function renderForm(){
   +'</form>');
   container.append(form);
   form.find('.add').on('click', function(e) {
+    e.preventDefault();
     var newTask = {
       importance: 'normal',
       todo: form.find('.newTask').val(),
@@ -54,13 +60,13 @@ function renderCurrentTasks(){
             + '<i class="fa fa-trash" aria-hidden="true"></i>'
             + '</button></li>');
     				toDoList.append(newHighTask);
-            newHighTask.find('.delete').on('click', deleteClick(toDo._id));
+            // newHighTask.find('.delete').on('click', deleteClick(toDo._id));
             // console.log('importance added');
           } else if (toDo.importance === 'normal' && toDo.status === 'incomplete') {
             var newNormalTask = $('<li class="' + toDo._id + '">' + toDo.todo
             + '<button class="delete ' + toDo._id + '"><i class="fa fa-trash" aria-hidden="true"></i></button></li>');
     				toDoList.append(newNormalTask);
-            newNormalTask.find('.delete').on('click', deleteClick(toDo._id));
+            // newNormalTask.find('.delete').on('click', deleteClick(toDo._id));
             // find the specific and add event listener // true false vs
             // console.log('no importance added');
           } else if (toDo.status === 'complete'){
@@ -77,6 +83,7 @@ function renderCurrentTasks(){
 }
 
 function renderCompleteTasks(){
+  window.location.hash = '#complete';
   //display all completed tasks
   toDoList.empty();
   header.empty();
@@ -122,7 +129,7 @@ function deleteClick(e, postID) {
       },
       error: function() {
         // log an error
-        console.log('the post didn\'t work');
+        console.log('did not delete');
       },
       contentType: 'application/json',
     };
@@ -157,5 +164,23 @@ function renderAllTasks(){
 }
 
 renderForm();
-renderCurrentTasks();
-// renderCompleteTasks();
+// if (location === '') {
+//   renderCurrentTasks();
+// } else if (location === '#complete') {
+//   renderCompleteTasks();
+// }
+
+function handleHashChange(e) {
+	var requestedTasks = location.hash;
+
+	if (requestedTasks === '#complete') {
+		// put the form on the page
+		renderCompleteTasks();
+	} else if (requestedTasks === '') {
+		renderCurrentTasks();
+	}
+}
+
+$(window).on('hashchange', handleHashChange);
+
+handleHashChange();
