@@ -54,20 +54,19 @@ function renderCurrentTasks(){
   			data.forEach(function(toDo, i, arr) {
   				// make an li + add an importance sub line if an importance is added
           if (toDo.importance === 'high' && toDo.status === 'incomplete') {
-            var newHighTask = $('<li class="' + toDo._id + '">' + toDo.todo +
+            var newHighTask = $('<li>' + toDo.todo +
             '<span><i class="fa fa-exclamation-circle" aria-hidden="true"></i></span>'
             + '<button class="delete ' + toDo._id + '">'
             + '<i class="fa fa-trash" aria-hidden="true"></i>'
             + '</button></li>');
     				toDoList.append(newHighTask);
-            // newHighTask.find('.delete').on('click', deleteClick(toDo._id));
+            // newHighTask.find('.' + toDo._id).on('click', deleteClick(toDo._id));
             // console.log('importance added');
           } else if (toDo.importance === 'normal' && toDo.status === 'incomplete') {
-            var newNormalTask = $('<li class="' + toDo._id + '">' + toDo.todo
+            var newNormalTask = $('<li>' + toDo.todo
             + '<button class="delete ' + toDo._id + '"><i class="fa fa-trash" aria-hidden="true"></i></button></li>');
     				toDoList.append(newNormalTask);
-            // newNormalTask.find('.delete').on('click', deleteClick(toDo._id));
-            // find the specific and add event listener // true false vs
+            // newNormalTask.find('.' + toDo._id).on('click', deleteClick(toDo._id));
             // console.log('no importance added');
           } else if (toDo.status === 'complete'){
             console.log('do not add');
@@ -115,10 +114,10 @@ function renderCompleteTasks(){
 }
 
 
-// build a function that moves the add listener for buttons elsewhere
-
+//function that moves the add listener for delete button
 function deleteClick(e, postID) {
   console.log('delete ran');
+  e.preventDefault();
   var deletePost = postID;
   var settings = {
       url: 'http://tiny-za-server.herokuapp.com/collections/max-todos/' + deletePost,
@@ -137,15 +136,7 @@ function deleteClick(e, postID) {
   }
 
 
-// deleteButtons.forEach(function(button, i, arr){
-//   button.on('click', function(e) {
-//     e.preventDefault();
-//     // this listener should delete posts
-//     var selectedButton = e.target.className;
-//     console.log(selectedButton);
-//   });
-// });
-
+// TO edit status of task
 // var settings = {
 //     url: 'http://tiny-za-server.herokuapp.com/collections/max-todos',
 //     type: 'PUT',
@@ -157,18 +148,40 @@ function deleteClick(e, postID) {
 //   };
 //   $.ajax(settings);
 //
-// status: 'incomplete'
 
 function renderAllTasks(){
   //display all current and complete tasks
+  window.location.hash = '#all-tasks';
+  //display all completed tasks
+  toDoList.empty();
+  header.empty();
+  var newTitle = $('<h1>All Tasks</h1>');
+  var settings = {
+      url: 'http://tiny-za-server.herokuapp.com/collections/max-todos',
+      type: 'GET',
+      success: function(data, status, xhr) {
+        data.forEach(function(toDo, i, arr) {
+          if (toDo.status === 'complete') {
+            var newHighTask = $('<li class="' + toDo._id + '">' + toDo.todo
+            + '<i class="fa fa-check" aria-hidden="true"></i></li>');
+            toDoList.append(newHighTask);
+            // console.log('importance added');
+          } else if (toDo.status === 'incomplete') {
+            var newNormalTask = $('<li class="' + toDo._id + '">' + toDo.todo + '</li>');
+            toDoList.append(newNormalTask);
+            // console.log('no importance added');
+          }
+        });
+      },
+      error: function() {
+        console.log('get request did not work');
+      }
+    };
+    $.ajax(settings);
+    header.append(newTitle);
 }
 
 renderForm();
-// if (location === '') {
-//   renderCurrentTasks();
-// } else if (location === '#complete') {
-//   renderCompleteTasks();
-// }
 
 function handleHashChange(e) {
 	var requestedTasks = location.hash;
@@ -178,7 +191,9 @@ function handleHashChange(e) {
 		renderCompleteTasks();
 	} else if (requestedTasks === '') {
 		renderCurrentTasks();
-	}
+	} else if (requestedTasks === "#all-tasks") {
+    renderAllTasks();
+  }
 }
 
 $(window).on('hashchange', handleHashChange);
