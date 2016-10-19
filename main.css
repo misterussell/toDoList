@@ -1,0 +1,38 @@
+body {
+  font-size: 62.5%;
+  font-family: 'Questrial', sans-serif;
+  text-align: center;
+}
+
+form {
+  margin: 1rem auto;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin: 1rem;
+}
+
+h2 {
+  display: inline-block;
+  color: #8e8c8f;
+  margin: 0 .5rem;
+}
+
+button {
+  display: inline-block;
+  margin-left: .5rem;
+}
+
+.delete {
+  display: inline-block;
+}
+
+.fa {
+  display: inline-block;
+}
